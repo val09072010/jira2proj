@@ -42,7 +42,7 @@ def main(argv):
 
 
 def read_new_config(new_config):
-    pass
+    raise NotImplementedError("Sorry, the feature is not yet implemented.")
 
 
 if __name__ == "__main__":
