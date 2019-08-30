@@ -33,7 +33,6 @@ def main(argv):
     options = {'server': config.JIRA_SERVER, 'verify': False}
     jira_con = JiraConnector(options, config.JIRA_LOGIN, config.JIRA_PASS)
     # 2. get list of JIRA Stories, Epics, Features (i.e. subjects of delivery)
-    # TODO 3: make field set configurable
     items = jira_con.get_items(config.JIRA_FILTER, config.JIRA_FIELDS)
     # 3. generate XML file
     # 4. get milestones list and apply it to each item from (2)

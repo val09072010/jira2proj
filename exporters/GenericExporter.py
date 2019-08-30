@@ -5,7 +5,7 @@ class GenericExporter:
         self.output_file = out_file
         self.milestones_file = milestones
 
-    def _export_to_output_file(self, tickets):
+    def _export_to_output_file(self, tickets, milestones):
         """the actual method for exporting milestones"""
         pass
 
@@ -18,4 +18,4 @@ class GenericExporter:
         if not tickets:
             print("No tickets to export please check the FILTER settings in config_local.py")
             exit(-1)
-        return self._export_to_output_file(tickets)
+        return self._export_to_output_file(tickets, self._read_milestones())
