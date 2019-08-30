@@ -1,9 +1,10 @@
 class GenericExporter:
-    __slots__ = ['milestones_file', 'output_file']
+    __slots__ = ['milestones_file', 'output_file', 'out_encoding']
 
-    def __init__(self, out_file, milestones):
+    def __init__(self, out_file, milestones, encoding):
         self.output_file = out_file
         self.milestones_file = milestones
+        self.out_encoding = encoding
 
     def _export_to_output_file(self, tickets, milestones):
         """the actual method for exporting milestones"""

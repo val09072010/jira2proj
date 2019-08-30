@@ -37,7 +37,7 @@ def main(argv):
     items = jira_con.get_items(config.JIRA_FILTER, config.JIRA_FIELDS)
     # 3. generate XML file
     # 4. get milestones list and apply it to each item from (2)
-    exporter = PlainTextExporter(resulting_file, milestones_file)
+    exporter = PlainTextExporter(resulting_file, milestones_file, config.ENCODING)
     # 5. populate (3) with <tasks>
     exporter.export(items)
 
