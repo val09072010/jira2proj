@@ -1,13 +1,14 @@
-"""Script for fast preparation of project plans (xml format) with pre-defined milestones, mandatory tasks and
-check points from JIRA
-Usage: $ python ./jira2proj.py [-f <config file>] [-m <path to file with milestones>] -o <output_xml>
+"""Script for fast preparation of project plans (xml format) with pre-defined milestones,
+mandatory tasks and check points from JIRA
+Usage:
+$ python ./jira2proj.py [-f <config file>] [-m <path to file with milestones>] -o <output_xml>
 Output: xml file with tasks and resources
 """
 import sys
 import getopt
 import config
 from issue_trackers.jira_connector import JiraConnector
-from exporters.PlainTextExporter import PlainTextExporter
+from exporters.plain_text_exporter import PlainTextExporter
 
 
 def main(argv):
@@ -15,7 +16,7 @@ def main(argv):
     milestones_file = config.MILESTONES_FILES
 
     try:
-        opts, args = getopt.getopt(argv, "o:m:f:", ["output=", "ms=" "config="])
+        opts, _ = getopt.getopt(argv, "o:m:f:", ["output=", "ms=", "config="])
         for opt, arg in opts:
             if opt in ("-o", "--output"):
                 resulting_file = arg
@@ -26,7 +27,7 @@ def main(argv):
             else:
                 pass
     except getopt.GetoptError:
-        print("Input params are wrong.\nUsage: $ python ./jira2proj.py [-f <config file>] -o <output_xml>")
+        print("Input params are wrong.\nUsage: $python ./jira2proj.py -o <output>")
         exit(1)
 
     # 1. connect to JIRA
