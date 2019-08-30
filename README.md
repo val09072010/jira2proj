@@ -26,11 +26,13 @@ $ python ./jira2proj.py -o output_file
 - JIRA fields which will be requested from server
 
 #### config_local.py
-
-- JIRA server host
-- JIRA user
-- JIRA password
-- JIRA filter
+**Note:** You should create file _config_local.py_ in the same dir and add the actual values 
+```python
+JIRA_SERVER = "https://jira.server.com"
+JIRA_LOGIN = "user"
+JIRA_PASS = "password"
+JIRA_FILTER = "project = PRJ AND issuetype = Feature AND status != Closed AND fixVersion is not EMPTY ORDER BY Rank"
+```
 
 ### Command line
 
