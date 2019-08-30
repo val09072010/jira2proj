@@ -22,8 +22,8 @@ JIRA_FILTER = JFF
 # JIRA_FIELDS is property to specify the fields which you really need to populate the future ms proj plan
 # please note that JIRA has custom fields named as customfield_10705 - please check your JIRA instance for correct name
 # in example below the field customfield_10705 corresponds to 'Sprint' custom filed(Agile plugin)
-JIRA_FIELDS ="summary,fixVersions,assignee,customfield_10705"
+JIRA_FIELDS = "summary,fixVersions,assignee,customfield_10705"
 
 JIRA_SSL_CERT_PATH = "./ssl/jira.crt"
 
-ENCODING="cp1251"
+ENCODING = "cp1251"
