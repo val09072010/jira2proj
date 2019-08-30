@@ -18,5 +18,5 @@ setup(
     url='https://github.com/',
     license=libms_license,
     packages=find_packages(exclude=('tests', 'docs')),
-    install_requires=['jira']
+    install_requires=['jira', "lxml", "urllib3"]
 )
