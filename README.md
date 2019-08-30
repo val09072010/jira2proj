@@ -11,3 +11,7 @@ Output: XML file compartible with MS proj and OpenProj
 References:
  - https://stackoverflow.com/questions/2415943/what-is-the-xml-spec-for-importing-into-microsoft-project
  - https://docs.microsoft.com/en-us/previous-versions/office/developer/office-2007/bb968733(v=office.12)
+
+Usage:
+$ python ./jira2proj.py -o <output_file>
+Output: xml file with tasks and resources
