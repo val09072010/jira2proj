@@ -3,3 +3,4 @@
 .gitignore
 config_local.py
 ssl/**
+out/**
