@@ -1,7 +1,8 @@
 from .GenericExporter import GenericExporter
+import lxml
 
 
-class PlainTextExporter(GenericExporter):
+class XmlExporter(GenericExporter):
     def _export_to_output_file(self, tickets):
         milestones = self._read_milestones()
         i = 1

@@ -6,8 +6,7 @@ Output: xml file with tasks and resources
 import sys
 import getopt
 import config
-from jira.client import JIRA
-import urllib3
+from issue_trackers.jira_connector import JiraConnector
 from exporters.PlainTextExporter import PlainTextExporter
 
 
@@ -31,13 +30,11 @@ def main(argv):
         exit(1)
 
     # 1. connect to JIRA
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     options = {'server': config.JIRA_SERVER, 'verify': False}
-    jira_con = JIRA(options, basic_auth=(config.JIRA_LOGIN, config.JIRA_PASS))
+    jira_con = JiraConnector(options, config.JIRA_LOGIN, config.JIRA_PASS)
     # 2. get list of JIRA Stories, Epics, Features (i.e. subjects of delivery)
     # TODO 3: make field set configurable
-    items = jira_con.search_issues(config.JIRA_FILTER, fields=config.JIRA_FIELDS)
-    jira_con.close()
+    items = jira_con.get_items(config.JIRA_FILTER, config.JIRA_FIELDS)
     # 3. generate XML file
     # 4. get milestones list and apply it to each item from (2)
     exporter = PlainTextExporter(resulting_file, milestones_file)

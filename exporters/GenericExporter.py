@@ -15,4 +15,7 @@ class GenericExporter:
         return milestones
 
     def export(self, tickets):
+        if not tickets:
+            print("No tickets to export please check the FILTER settings in config_local.py")
+            exit(-1)
         return self._export_to_output_file(tickets)
