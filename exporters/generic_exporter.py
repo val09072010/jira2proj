@@ -8,7 +8,7 @@ class GenericExporter:
 
     def _export_to_output_file(self, tickets, milestones):
         """the actual method for exporting milestones"""
-        pass
+        raise NotImplementedError("Please use concrete child class")
 
     def _read_milestones(self):
         with open(self.milestones_file, "r") as mls:
