@@ -8,15 +8,17 @@ import sys
 import getopt
 import config
 from issue_trackers.jira_connector import JiraConnector
+from exporters.xml_exporter import XmlExporter
 from exporters.plain_text_exporter import PlainTextExporter
 
 
 def main(argv):
     resulting_file = ""
     milestones_file = config.MILESTONES_FILES
+    to_plain_text = False
 
     try:
-        opts, _ = getopt.getopt(argv, "o:m:f:", ["output=", "ms=", "config="])
+        opts, _ = getopt.getopt(argv, "o:m:f:t:", ["output=", "ms=", "config=", "text="])
         for opt, arg in opts:
             if opt in ("-o", "--output"):
                 resulting_file = arg
@@ -24,6 +26,8 @@ def main(argv):
                 read_new_config(arg)
             elif opt in ("-m", "--ms"):
                 milestones_file = arg
+            elif opt in ("-t", "--text"):
+                to_plain_text = True
             else:
                 pass
     except getopt.GetoptError:
@@ -37,7 +41,10 @@ def main(argv):
     items = jira_con.get_items(config.JIRA_FILTER, config.JIRA_FIELDS)
     # 3. generate XML file
     # 4. get milestones list and apply it to each item from (2)
-    exporter = PlainTextExporter(resulting_file, milestones_file, config.ENCODING)
+    if to_plain_text:
+        exporter = PlainTextExporter(resulting_file, milestones_file, config.ENCODING)
+    else:
+        exporter = XmlExporter(resulting_file, milestones_file, config.ENCODING)
     # 5. populate (3) with <tasks>
     exporter.export(items)
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmsns="http://schemas.microsoft.com/project">
+    <SaveVersion>14</SaveVersion>
+    <Tasks>
+        <!-- <Task>
+            <ID>100</ID>
+            <UID>100</UID>
+            <Name>Develop the code</Name>
+            <OutlineNumber>1</OutlineNumber>
+            <OutlineLevel>1</OutlineLevel>
+            <Active>1</Active>
+            <Manual>0</Manual>
+            <IsNull>0</IsNull>
+            <Start>2011-01-03T00:00:00</Start>
+            <Finish>2011-06-05T00:00:00</Finish>
+            <ConstraintType>4</ConstraintType>
+            <ConstraintDate>2011-01-03T00:00:00</ConstraintDate>
+            <FixedCostAccrual>3</FixedCostAccrual>
+            <CalendarUID>-1</CalendarUID>
+            <IgnoreResourceCalendar>1</IgnoreResourceCalendar>
+        </Task> -->
+    </Tasks>
+    <Resources>
+        <Resource>
+            <ID>100</ID>
+            <UID>100</UID>
+            <Name>Programmer</Name>
+            <Initials>D</Initials>
+        </Resource>
+    </Resources>
+    <Assignments>
+        <Assignment>
+            <UID>1</UID>
+            <TaskUID>1</TaskUID>
+            <ResourceUID>100</ResourceUID>
+        </Assignment>
+    </Assignments>
+</Project>
