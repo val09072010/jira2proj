@@ -3,38 +3,42 @@ from exporters.generic_exporter import GenericExporter
 
 
 TEMPLATE_PROJ_XML = 'assets/template.xml'
-TASKS_TAG = 'Tasks'
+TASKS_TAG = '{http://schemas.microsoft.com/project}Tasks'
+TASKS_TAG_NO_NAMESPACE = "Tasks"
 TASK_STR = '''
-<Task>
-    <ID>{0}</ID>
-    <UID>{1}</UID>
-    <Name>{2}</Name>
-    <OutlineNumber>1</OutlineNumber>
-    <OutlineLevel>1</OutlineLevel>
-    <Active>1</Active>
-    <Manual>0</Manual>
-    <IsNull>0</IsNull>
-    <Start>2011-01-03T00:00:00</Start>
-    <Finish>2011-06-05T00:00:00</Finish>
-    <ConstraintType>4</ConstraintType>
-    <ConstraintDate>2011-01-03T00:00:00</ConstraintDate>
-    <FixedCostAccrual>3</FixedCostAccrual>
-    <CalendarUID>-1</CalendarUID>
-    <IgnoreResourceCalendar>1</IgnoreResourceCalendar>
-</Task>
+        <Task>
+            <UID>{1}</UID>
+            <ID>{0}</ID>
+            <Name>{2}</Name>
+            <Priority>500</Priority>
+            <Start>2019-10-02T08:00:00</Start>
+            <Finish>2019-10-03T17:00:00</Finish>
+            <Duration>PT8H0M0S</Duration>
+            <DurationFormat>7</DurationFormat>
+            <Work>PT08H0M0S</Work>
+            <EffortDriven>1</EffortDriven>
+            <Estimated>1</Estimated>
+            <FixedCostAccrual>2</FixedCostAccrual>
+            <ConstraintType>0</ConstraintType>
+            <CalendarUID>-1</CalendarUID>
+            <ConstraintDate>1970-01-01T00:00:00</ConstraintDate>
+            <IgnoreResourceCalendar>0</IgnoreResourceCalendar>
+        </Task>
 '''
+
 DEF_TASK_ID = 1
 DEF_TASK_UID = 1
 
 class XmlExporter(GenericExporter):
     def _export_to_output_file(self, project_tasks):
 
-        tree = et.parse(TEMPLATE_PROJ_XML)
+        parser = et.XMLParser(remove_blank_text=True)
+        tree = et.parse(TEMPLATE_PROJ_XML, parser)
         root = tree.getroot()
         tasks = root.find(TASKS_TAG)
 
-        if not len(tasks):
-            tasks = et.SubElement(root, TASKS_TAG)
+        if tasks is None:
+            tasks = et.SubElement(root, TASKS_TAG_NO_NAMESPACE)
 
         task_uid = DEF_TASK_UID
         task_id = DEF_TASK_ID
@@ -45,6 +49,6 @@ class XmlExporter(GenericExporter):
             task_uid += 1
 
         with open(self.output_file, "w", encoding=self.out_encoding) as out:
-            doc_len = out.write(str(et.tostring(root, pretty_print=True, encoding=self.out_encoding),encoding=self.out_encoding))
+            doc_len = out.write(str(et.tostring(root, pretty_print=True, encoding=self.out_encoding), encoding=self.out_encoding))
 
         return doc_len

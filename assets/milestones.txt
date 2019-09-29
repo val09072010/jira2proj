@@ -1,11 +1,12 @@
-Требование {1}. {0}
-Проведение анализа {0}
-Анализ {0} проведен
-Разработка {0}
-Разработка {0} выполнена
-Приемочное тестирование {0}
-Разработка {0} оттестирована
-Установка в продуктив {0}
-Разработка {0} установлена
-UAT разработки {0}
-Требование {1}. {0} принято
+RFC {1}. {0}
+Analysing of RFC {0}
+Analysing of RFC {0}. Completed
+Development of {0}
+Development of {0}. Completed
+Acceptance testing of {0}
+Acceptance testing of {0}. Completed
+Roll out to production of {0}
+RFC {0} rolled out to production
+Business UAT of {0}
+Business UAT of {0}. Completed
+RFC {1}. {0} accepted

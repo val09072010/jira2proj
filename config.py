@@ -26,4 +26,4 @@ JIRA_FIELDS = "summary,fixVersions,assignee,customfield_10705"
 
 JIRA_SSL_CERT_PATH = "./ssl/jira.crt"
 
-ENCODING = "cp1251"
+ENCODING = "utf-8"
