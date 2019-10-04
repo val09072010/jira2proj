@@ -29,6 +29,7 @@ TASK_STR = '''
 DEF_TASK_ID = 1
 DEF_TASK_UID = 1
 
+
 class XmlExporter(GenericExporter):
     def _export_to_output_file(self, project_tasks):
 
@@ -49,6 +50,7 @@ class XmlExporter(GenericExporter):
             task_uid += 1
 
         with open(self.output_file, "w", encoding=self.out_encoding) as out:
-            doc_len = out.write(str(et.tostring(root, pretty_print=True, encoding=self.out_encoding), encoding=self.out_encoding))
+            out_str =  str(et.tostring(root, pretty_print=True, encoding=self.out_encoding), encoding=self.out_encoding)
+            doc_len = out.write(out_str)
 
         return doc_len
