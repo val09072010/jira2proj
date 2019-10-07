@@ -15,4 +15,6 @@ class JiraConnector:
         jira_con = JIRA(self.options, basic_auth=(self.login, self.password))
         items = jira_con.search_issues(jira_jql_statemet, fields=fields)
         jira_con.close()
-        return items
+        # TODO 1: make field configurable i.e. tck.key or tck.fields.summary etc.
+        # TODO 2: IMPLICIT dependency! Decouple code and assets/milestones.txt
+        return list(map(lambda s: s.fields.summary, items))

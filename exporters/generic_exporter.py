@@ -24,9 +24,7 @@ class GenericExporter:
         i = 1
         project_tasks = []
         for tck in tickets:
-            # TODO 1: make field configurable i.e. tck.key or tck.fields.summary etc.
-            # TODO 2: IMPLICIT dependency! Decouple code and assets/milestones.txt
-            tck_milestones = list(map(lambda x, it=tck: x.format(it.fields.summary, i), milestones))
+            tck_milestones = list(map(lambda x, it=tck: x.format(it, i), milestones))
             project_tasks.extend(tck_milestones)
             i += 1
         return self._export_to_output_file(list(map(lambda x: x.strip(), project_tasks)))

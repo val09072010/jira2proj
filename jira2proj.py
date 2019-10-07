@@ -12,33 +12,40 @@ from exporters.xml_exporter import XmlExporter
 from exporters.plain_text_exporter import PlainTextExporter
 
 
+TEST_ITEMS = ["Test task 1", "Test task 2", "Задача на русском 3"]
+
+
 def main(argv):
     resulting_file = ""
     milestones_file = config.MILESTONES_FILES
     to_plain_text = False
+    with_jira = True
 
     try:
-        opts, _ = getopt.getopt(argv, "o:m:f:t:", ["output=", "ms=", "config=", "text="])
+        opts, _ = getopt.getopt(argv, "o:m:f:t:n:", ["output=", "ms=", "text=", "no-jira="])
         for opt, arg in opts:
             if opt in ("-o", "--output"):
                 resulting_file = arg
-            elif opt in ("-f", "--config"):
-                read_new_config(arg)
             elif opt in ("-m", "--ms"):
                 milestones_file = arg
             elif opt in ("-t", "--text"):
                 to_plain_text = True
+            elif opt in ("-n", "--no-jira"):
+                with_jira = False
             else:
                 pass
     except getopt.GetoptError:
         print("Input params are wrong.\nUsage: $python ./jira2proj.py -o <output>")
         exit(1)
 
-    # 1. connect to JIRA
-    options = {'server': config.JIRA_SERVER, 'verify': False}
-    jira_con = JiraConnector(options, config.JIRA_LOGIN, config.JIRA_PASS)
-    # 2. get list of JIRA Stories, Epics, Features (i.e. subjects of delivery)
-    items = jira_con.get_items(config.JIRA_FILTER, config.JIRA_FIELDS)
+    if with_jira:
+        # 1. connect to JIRA
+        options = {'server': config.JIRA_SERVER, 'verify': False}
+        jira_con = JiraConnector(options, config.JIRA_LOGIN, config.JIRA_PASS)
+        # 2. get list of JIRA Stories, Epics, Features (i.e. subjects of delivery)
+        items = jira_con.get_items(config.JIRA_FILTER, config.JIRA_FIELDS)
+    else:
+        items = TEST_ITEMS
     # 3. generate XML file
     # 4. get milestones list and apply it to each item from (2)
     if to_plain_text:
