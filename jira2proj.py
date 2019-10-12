@@ -1,7 +1,7 @@
 """Script for fast preparation of project plans (xml format) with pre-defined milestones,
 mandatory tasks and check points from JIRA
 Usage:
-$ python ./jira2proj.py [-f <config file>] [-m <path to file with milestones>] -o <output_xml>
+$ python ./jira2proj.py [-m <path to file with milestones>] [-t 1] [-n <path to file with tasks>] -o <output_xml>
 Output: xml file with tasks and resources
 """
 import sys

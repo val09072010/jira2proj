@@ -28,12 +28,12 @@ JIRA_SSL_CERT_PATH = "path to crt file with JIRA server ssl certificate"
 - There is only one mandatory arg is path to output file specifies with -o path-to-output-file
 - Optional:
   * -m: path to file with milestones
-  * -f: path to new property file (*not yet implemented!*)
   * -t: yes or 1 - use to produce plain text output
   * -n: path to text file with list of tasks to be used instead of JIRA server
 
 ### Output
-XML file compatible with MS proj and OpenProj
+Default output is XML file compatible with MS proj and OpenProj
+When using -t 1 script produces plain text output
 
 ### Dependencies
 - jira
