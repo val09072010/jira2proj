@@ -13,18 +13,6 @@ $ python ./jira2proj.py -o output_file
 ```
 ### Input
 
-#### config.py
-
-- path to JIRA ssl certificate
-- path to file with Milestones you must have for each feature/story, i.e.:
-  * Requirements baselined
-  * Access provided
-  * Development started
-  * Development
-  * Development finished
-  * etc.
-- JIRA fields which will be requested from server
-
 #### config_local.py
 **Note:** You should create file _config_local.py_ in the same dir and add the actual values 
 ```python
@@ -32,14 +20,17 @@ JIRA_SERVER = "https://jira.server.com"
 JIRA_LOGIN = "user"
 JIRA_PASS = "password"
 JIRA_FILTER = "project = PRJ AND issuetype = Feature AND status != Closed AND fixVersion is not EMPTY ORDER BY Rank"
+JIRA_SSL_CERT_PATH = "path to crt file with JIRA server ssl certificate"
 ```
 
 ### Command line
 
-- There is only one mandatory arg is path to output file specifies with -o path-to-file
+- There is only one mandatory arg is path to output file specifies with -o path-to-output-file
 - Optional:
   * -m: path to file with milestones
   * -f: path to new property file (*not yet implemented!*)
+  * -t: yes or 1 - use to produce plain text output
+  * -n: path to text file with list of tasks to be used instead of JIRA server
 
 ### Output
 XML file compatible with MS proj and OpenProj

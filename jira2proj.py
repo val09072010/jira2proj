@@ -27,7 +27,7 @@ except ModuleNotFoundError:
     print("JIRA_SERVER = JIRA server URL, e.g. https://jira.company.com")
     print("JIRA_LOGIN = JIRA account name")
     print("JIRA_PASS = JIRA account password")
-    print("JIRA_FILTER = JIRA filter in JQL lenguadge that will be run to take tasks")
+    print("JIRA_FILTER = JIRA filter in JQL language that will be run to take tasks")
     NO_JIRA_PARAMS = True
 
 TEMPLATE_PROJ_XML = 'assets/template.xml'
@@ -173,7 +173,7 @@ def main(argv):
     tasks_from_text_file = ""
 
     try:
-        opts, _ = getopt.getopt(argv, "o:m:f:t:n:", ["output=", "milestones=", "text=", "no-jira="])
+        opts, _ = getopt.getopt(argv, "o:m:t:n:", ["output=", "milestones=", "text=", "no-jira="])
         for opt, arg in opts:
             if opt in ("-o", "--output"):
                 resulting_file = arg
@@ -192,8 +192,8 @@ def main(argv):
 
     if with_jira:
         if NO_JIRA_PARAMS:
-            print("JIRA params are not specified in ./config_local.py - script can't proceed.")
-            print("Use -n <path to text file with tasks> to build Project file or prepare ./config_local.py")
+            print("Script stopped: JIRA params are not specified in ./config_local.py.")
+            print("Use -n <path to text file with tasks> to build Project file without JIRA or prepare ./config_local.py")
             exit(-1)
         # 1. connect to JIRA
         options = {'server': config_local.JIRA_SERVER, 'verify': False}
