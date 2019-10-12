@@ -6,11 +6,29 @@ Output: xml file with tasks and resources
 """
 import sys
 import getopt
-import config
 from lxml import etree as et
 from jira.client import JIRA
 import urllib3
 
+
+ENCODING = "utf-8"
+MILESTONES_FILES = "./assets/milestones.txt"
+# JIRA_FIELDS is property to specify the fields which you really need to populate the future ms proj plan
+# please note that JIRA has custom fields named as customfield_10705 - please check your JIRA instance for correct name
+# in example below the field customfield_10705 corresponds to 'Sprint' custom filed(Agile plugin)
+JIRA_FIELDS = "summary,fixVersions,assignee,customfield_10705"
+NO_JIRA_PARAMS = False
+
+try:
+    import config_local
+except ModuleNotFoundError:
+    print("Please create ./config_local.py file with the following properties inside:")
+    print("JIRA_SSL_CERT_PATH = <path to crt file with JIRA server ssl certificate>")
+    print("JIRA_SERVER = JIRA server URL, e.g. https://jira.company.com")
+    print("JIRA_LOGIN = JIRA account name")
+    print("JIRA_PASS = JIRA account password")
+    print("JIRA_FILTER = JIRA filter in JQL lenguadge that will be run to take tasks")
+    NO_JIRA_PARAMS = True
 
 TEMPLATE_PROJ_XML = 'assets/template.xml'
 TASKS_TAG = '{http://schemas.microsoft.com/project}Tasks'
@@ -137,9 +155,6 @@ class XmlExporter(GenericExporter):
         # Step 2: add mandatory tags
         for k in PROJ_TAGS_MAP:
             self.__insert_sub_element(root, k, PROJ_TAGS_MAP[k])
-        # Step 3: add Calendar
-        print(str(et.tostring(root, encoding=self.out_encoding, pretty_print=True), encoding=self.out_encoding))
-
         return root
 
     @staticmethod
@@ -152,7 +167,7 @@ class XmlExporter(GenericExporter):
 
 def main(argv):
     resulting_file = ""
-    milestones_file = config.MILESTONES_FILES
+    milestones_file = MILESTONES_FILES
     to_plain_text = False
     with_jira = True
     tasks_from_text_file = ""
@@ -176,11 +191,15 @@ def main(argv):
         exit(1)
 
     if with_jira:
+        if NO_JIRA_PARAMS:
+            print("JIRA params are not specified in ./config_local.py - script can't proceed.")
+            print("Use -n <path to text file with tasks> to build Project file or prepare ./config_local.py")
+            exit(-1)
         # 1. connect to JIRA
-        options = {'server': config.JIRA_SERVER, 'verify': False}
-        jira_con = JiraConnector(options, config.JIRA_LOGIN, config.JIRA_PASS)
+        options = {'server': config_local.JIRA_SERVER, 'verify': False}
+        jira_con = JiraConnector(options, config_local.JIRA_LOGIN, config_local.JIRA_PASS)
         # 2. get list of JIRA Stories, Epics, Features (i.e. subjects of delivery)
-        items = jira_con.get_items(config.JIRA_FILTER, config.JIRA_FIELDS)
+        items = jira_con.get_items(config_local.JIRA_FILTER, JIRA_FIELDS)
     else:
         if tasks_from_text_file:
             with open(tasks_from_text_file, "r") as f:
@@ -190,15 +209,11 @@ def main(argv):
     # 3. generate XML file
     # 4. get milestones list and apply it to each item from (2)
     if to_plain_text:
-        exporter = PlainTextExporter(resulting_file, milestones_file, config.ENCODING)
+        exporter = PlainTextExporter(resulting_file, milestones_file, ENCODING)
     else:
-        exporter = XmlExporter(resulting_file, milestones_file, config.ENCODING)
+        exporter = XmlExporter(resulting_file, milestones_file, ENCODING)
     # 5. populate (3) with <tasks>
     exporter.export(items)
-
-
-def read_new_config(new_config):
-    raise NotImplementedError("Sorry, the feature is not yet implemented.")
 
 
 if __name__ == "__main__":
