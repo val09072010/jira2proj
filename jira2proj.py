@@ -1,7 +1,7 @@
 """Script for fast preparation of project plans (xml format) with pre-defined milestones,
 mandatory tasks and check points from JIRA
 Usage:
-$ python ./jira2proj.py [-m <path to file with milestones>] [-t 1] [-n <path to file with tasks>] -o <output_xml>
+$ python ./jira2proj.py [-m <milestones file>] [-t 1] [-n <tasks file>] -o <output>
 Output: xml file with tasks and resources
 """
 import sys
@@ -13,9 +13,9 @@ import urllib3
 
 ENCODING = "utf-8"
 MILESTONES_FILES = "./assets/milestones.txt"
-# JIRA_FIELDS is property to specify the fields which you really need to populate the future ms proj plan
-# please note that JIRA has custom fields named as customfield_10705 - please check your JIRA instance for correct name
-# in example below the field customfield_10705 corresponds to 'Sprint' custom filed(Agile plugin)
+# JIRA_FIELDS is property to specify the fields which you need to populate the future ms proj plan
+# please check your JIRA instance to use correct names for custom fields:
+# e.g. field customfield_10705 corresponds to custom filed 'Sprint' added by Agile plugin
 JIRA_FIELDS = "summary,fixVersions,assignee,customfield_10705"
 NO_JIRA_PARAMS = False
 
@@ -35,27 +35,32 @@ TASKS_TAG = '{http://schemas.microsoft.com/project}Tasks'
 CALENDAR_TAG = '{http://schemas.microsoft.com/project}Calendars'
 TASKS_TAG_NO_NAMESPACE = "Tasks"
 
-PROJ_TAGS_MAP = {'Name': 'Template', 'Title': 'Template', 'Manager': 'PM', 'ScheduleFromStart': '1',
-                 'StartDate': '2019-09-30T08:00:00', 'FinishDate': '2019-10-01T17:00:00', 'FYStartDate': '1',
-                 'CriticalSlackLimit': '0', 'CurrencyDigits': '2', 'CurrencySymbol': '$', 'CurrencySymbolPosition': '0',
-                 'CalendarUID': '1', 'DefaultStartTime': '11:00:00', 'DefaultFinishTime': '20:00:00',
-                 'MinutesPerDay': '480', 'MinutesPerWeek': '2400', 'DaysPerMonth': '20', 'DefaultTaskType': '0',
-                 'DefaultFixedCostAccrual': '2', 'DefaultStandardRate': '10', 'DefaultOvertimeRate': '15',
-                 'DurationFormat': '7', 'WorkFormat': '2', 'EditableActualCosts': '0', 'HonorConstraints': '0',
-                 'EarnedValueMethod': '0', 'InsertedProjectsLikeSummary': '0', 'MultipleCriticalPaths': '0',
-                 'NewTasksEffortDriven': '0', 'NewTasksEstimated': '1', 'SplitsInProgressTasks': '0',
-                 'SpreadActualCost': '0', 'SpreadPercentComplete': '0', 'TaskUpdatesResource': '1',
-                 'FiscalYearStart': '0', 'WeekStartDay': '1', 'MoveCompletedEndsBack': '0',
-                 'MoveRemainingStartsBack': '0', 'MoveRemainingStartsForward': '0', 'MoveCompletedEndsForward': '0',
+PROJ_TAGS_MAP = {'Name': 'Template', 'Title': 'Template', 'Manager': 'PM',
+                 'ScheduleFromStart': '1', 'StartDate': '2019-09-30T08:00:00',
+                 'FinishDate': '2019-10-01T17:00:00', 'FYStartDate': '1',
+                 'CriticalSlackLimit': '0', 'CurrencyDigits': '2', 'CurrencySymbol': '$',
+                 'CurrencySymbolPosition': '0', 'CalendarUID': '1', 'DefaultStartTime': '11:00:00',
+                 'DefaultFinishTime': '20:00:00', 'MinutesPerDay': '480', 'MinutesPerWeek': '2400',
+                 'DaysPerMonth': '20', 'DefaultTaskType': '0', 'DefaultFixedCostAccrual': '2',
+                 'DefaultStandardRate': '10', 'DefaultOvertimeRate': '15', 'DurationFormat': '7',
+                 'WorkFormat': '2', 'EditableActualCosts': '0', 'HonorConstraints': '0',
+                 'EarnedValueMethod': '0', 'InsertedProjectsLikeSummary': '0',
+                 'MultipleCriticalPaths': '0', 'NewTasksEffortDriven': '0', 'NewTasksEstimated': '1',
+                 'SplitsInProgressTasks': '0', 'SpreadActualCost': '0', 'SpreadPercentComplete': '0',
+                 'TaskUpdatesResource': '1', 'FiscalYearStart': '0', 'WeekStartDay': '1',
+                 'MoveCompletedEndsBack': '0', 'MoveRemainingStartsBack': '0',
+                 'MoveRemainingStartsForward': '0', 'MoveCompletedEndsForward': '0',
                  'BaselineForEarnedValue': '0', 'AutoAddNewResourcesAndTasks': '1',
-                 'CurrentDate': '2019-09-29T11:05:00', 'MicrosoftProjectServerURL': '1', 'Autolink': '1',
-                 'NewTaskStartDate': '0', 'DefaultTaskEVMethod': '0', 'ProjectExternallyEdited': '0',
-                 'ActualsInSync': '0', 'RemoveFileProperties': '0', 'AdminProject': '0'}
+                 'CurrentDate': '2019-09-29T11:05:00', 'MicrosoftProjectServerURL': '1',
+                 'Autolink': '1', 'NewTaskStartDate': '0', 'DefaultTaskEVMethod': '0',
+                 'ProjectExternallyEdited': '0', 'ActualsInSync': '0', 'RemoveFileProperties': '0',
+                 'AdminProject': '0'}
 
 TASK_TAGS = {'Priority': '500', 'Start': '2019-10-02T08:00:00',
-             'Finish': '2019-10-03T17:00:00', 'Duration': 'PT8H0M0S', 'DurationFormat': '7', 'Work': 'PT08H0M0S',
-             'EffortDriven': '1', 'Estimated': '1', 'FixedCostAccrual': '2', 'ConstraintType': '0', 'CalendarUID': '-1',
-             'ConstraintDate': '1970-01-01T00:00:00', 'IgnoreResourceCalendar': '0'}
+             'Finish': '2019-10-03T17:00:00', 'Duration': 'PT8H0M0S', 'DurationFormat': '7',
+             'Work': 'PT08H0M0S', 'EffortDriven': '1', 'Estimated': '1', 'FixedCostAccrual': '2',
+             'ConstraintType': '0', 'CalendarUID': '-1', 'ConstraintDate': '1970-01-01T00:00:00',
+             'IgnoreResourceCalendar': '0'}
 
 DEF_TASK_ID = 1
 DEF_TASK_UID = 1
@@ -144,7 +149,7 @@ class XmlExporter(GenericExporter):
         et.SubElement(root, "Assignments")
 
         with open(self.output_file, "w", encoding=self.out_encoding) as out:
-            out_str =  str(et.tostring(root, pretty_print=True, encoding=self.out_encoding), encoding=self.out_encoding)
+            out_str = str(et.tostring(root, pretty_print=True, encoding=self.out_encoding), encoding=self.out_encoding)
             doc_len = out.write(out_str)
 
         return doc_len
@@ -193,7 +198,7 @@ def main(argv):
     if with_jira:
         if NO_JIRA_PARAMS:
             print("Script stopped: JIRA params are not specified in ./config_local.py.")
-            print("Use -n <path to text file with tasks> to build Project file without JIRA or prepare ./config_local.py")
+            print("Use -n option to build Project without JIRA or create ./config_local.py")
             exit(-1)
         # 1. connect to JIRA
         options = {'server': config_local.JIRA_SERVER, 'verify': False}
@@ -202,8 +207,8 @@ def main(argv):
         items = jira_con.get_items(config_local.JIRA_FILTER, JIRA_FIELDS)
     else:
         if tasks_from_text_file:
-            with open(tasks_from_text_file, "r") as f:
-                items = f.readlines()
+            with open(tasks_from_text_file, "r") as tasks_file:
+                items = tasks_file.readlines()
         else:
             items = []
     # 3. generate XML file
