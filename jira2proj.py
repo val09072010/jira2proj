@@ -97,7 +97,7 @@ class GenericExporter:
         raise NotImplementedError("Please use concrete child class")
 
     def _read_milestones(self):
-        with open(self.milestones_file, "r") as mls:
+        with open(self.milestones_file, "r", encoding=ENCODING) as mls:
             milestones = mls.readlines()
         return milestones
 
@@ -110,7 +110,7 @@ class GenericExporter:
         i = 1
         project_tasks = []
         for tck in tickets:
-            tck_milestones = list(map(lambda x, it=tck: x.format(it, i), milestones))
+            tck_milestones = list(map(lambda x, it=tck: x.format(it.strip(), i), milestones))
             project_tasks.extend(tck_milestones)
             i += 1
         return self._export_to_output_file(list(map(lambda x: x.strip(), project_tasks)))
@@ -207,7 +207,7 @@ def main(argv):
         items = jira_con.get_items(config_local.JIRA_FILTER, JIRA_FIELDS)
     else:
         if tasks_from_text_file:
-            with open(tasks_from_text_file, "r") as tasks_file:
+            with open(tasks_from_text_file, "r", encoding=ENCODING) as tasks_file:
                 items = tasks_file.readlines()
         else:
             items = []
